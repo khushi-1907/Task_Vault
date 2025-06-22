@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: task-vault-backend
+    env: python
+    rootDir: backend
+    buildCommand: |
+      pip install -r ../requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: gunicorn backend.wsgi:application
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: task-vault-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        value: your-django-secret-key
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: task-vault-backend.onrender.com
+
+  - type: static
+    name: task-vault-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist  # or 'build' if using Create React App
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://task-vault-backend.onrender.com/api
