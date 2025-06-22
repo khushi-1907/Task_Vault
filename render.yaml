@@ -20,11 +20,15 @@ services:
       - key: ALLOWED_HOSTS
         value: task-vault-backend.onrender.com
 
-  - type: static
+  - type: web  # 👈 treat React app as web service
     name: task-vault-frontend
+    env: node
     rootDir: frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: dist  # or 'build' if using Create React App
+    startCommand: serve -s dist  # or `serve -s build` for CRA
+    buildFilter:
+      paths: ["frontend/**"]
+    staticPublishPath: dist  # 👈 necessary even if 'web'
     envVars:
       - key: REACT_APP_API_URL
         value: https://task-vault-backend.onrender.com/api
