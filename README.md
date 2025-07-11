@@ -1,7 +1,7 @@
 # 📝 TaskVault
 TaskVault is a full-stack task management web app that helps you stay productive with a clean, modern interface. Switch between light and dark themes, filter tasks, and manage your to-dos with ease.
 
-🔗 **Live Demo:** [https://task-vault-2.onrender.com](https://task-vault-2.onrender.com)
+🔗 **Live Demo:** https://task-vault-rosy.vercel.app/
 
 ---
 
