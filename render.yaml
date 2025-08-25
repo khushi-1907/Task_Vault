@@ -4,10 +4,10 @@ services:
     env: python
     rootDir: backend
     buildCommand: |
-      pip install -r ../requirements.txt
+      pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
-    startCommand: gunicorn backend.wsgi:application
+    startCommand: gunicorn backend.wsgi:application --bind 0.0.0.0:10000
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -18,17 +18,17 @@ services:
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        value: task-vault-backend.onrender.com
+        value: task-vault-backend.onrender.com,task-vault-frontend.onrender.com
 
-  - type: web  # 👈 treat React app as web service
+  - type: web
     name: task-vault-frontend
     env: node
     rootDir: frontend
     buildCommand: npm install && npm run build
-    startCommand: serve -s dist  # or `serve -s build` for CRA
+    startCommand: serve -s dist   # 👈 change to `build` if CRA
     buildFilter:
       paths: ["frontend/**"]
-    staticPublishPath: dist  # 👈 necessary even if 'web'
+    staticPublishPath: dist       # 👈 or `build` if CRA
     envVars:
       - key: REACT_APP_API_URL
         value: https://task-vault-backend.onrender.com/api
