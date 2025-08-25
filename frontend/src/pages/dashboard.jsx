@@ -3,7 +3,6 @@ import api from "../api";
 import {
   Sun,
   Moon,
-  X,
   Circle,
   CheckCircle,
   PlusCircle,
@@ -18,62 +17,77 @@ const Dashboard = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [loading, setLoading] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [flash, setFlash] = useState("");
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
   const fetchTasks = async () => {
+    setLoading(true);
+    setFlash("");
     try {
-      const res = await api.get("/tasks/");
+      const res = await api.get("api/tasks/");
       setTasks(res.data);
     } catch (err) {
-      console.error(err);
+      setFlash("⚠️ Failed to load tasks.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCreate = async (e) => {
     e.preventDefault();
+    setCreating(true);
+    setFlash("");
     try {
-      await api.post("/tasks/", { title, description, deadline });
+      await api.post("api/tasks/", { title, description, deadline });
       setTitle("");
       setDescription("");
       setDeadline("");
       fetchTasks();
     } catch (err) {
-      alert("Failed to create task.");
+      setFlash("❌ Failed to create task.");
+    } finally {
+      setCreating(false);
     }
   };
 
   const toggleComplete = async (task) => {
     try {
-      await api.put(`/tasks/${task.id}/`, {
+      await api.put(`api/tasks/${task.id}/`, {
         ...task,
         completed: !task.completed,
       });
       fetchTasks();
     } catch (err) {
-      alert("Failed to update task.");
+      setFlash("❌ Failed to update task.");
     }
   };
 
   const deleteTask = async (id) => {
     try {
-      await api.delete(`/tasks/${id}/`);
+      await api.delete(`api/tasks/${id}/`);
       fetchTasks();
     } catch (err) {
-      alert("Failed to delete task.");
+      setFlash("❌ Failed to delete task.");
     }
   };
 
   const clearCompleted = async () => {
-    const completedTasks = tasks.filter((task) => task.completed);
-    await Promise.all(
-      completedTasks.map((task) => api.delete(`/tasks/${task.id}/`))
-    );
-    fetchTasks();
+    try {
+      const completedTasks = tasks.filter((task) => task.completed);
+      await Promise.all(
+        completedTasks.map((task) => api.delete(`api/tasks/${task.id}/`))
+      );
+      fetchTasks();
+    } catch {
+      setFlash("❌ Failed to clear completed tasks.");
+    }
   };
 
   const getFilteredTasks = () => {
@@ -104,6 +118,13 @@ const Dashboard = () => {
           </button>
         </div>
 
+        {/* Flash Messages */}
+        {flash && (
+          <div className="mb-4 bg-red-100 text-red-700 px-4 py-2 rounded shadow text-sm">
+            {flash}
+          </div>
+        )}
+
         {/* Form */}
         <form
           onSubmit={handleCreate}
@@ -127,6 +148,7 @@ const Dashboard = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
+            disabled={creating}
           />
 
           <label
@@ -143,6 +165,7 @@ const Dashboard = () => {
             }`}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            disabled={creating}
           ></textarea>
 
           <label
@@ -160,11 +183,46 @@ const Dashboard = () => {
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             required
+            disabled={creating}
           />
 
-          <button className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 flex items-center justify-center gap-2">
-            <PlusCircle size={18} />
-            Add Task
+          <button
+            type="submit"
+            disabled={creating}
+            className={`w-full bg-indigo-600 text-white py-2 rounded flex items-center justify-center gap-2 ${
+              creating ? "opacity-70 cursor-not-allowed" : "hover:bg-indigo-700"
+            }`}
+          >
+            {creating ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Adding...
+              </>
+            ) : (
+              <>
+                <PlusCircle size={18} />
+                Add Task
+              </>
+            )}
           </button>
         </form>
 
@@ -174,7 +232,9 @@ const Dashboard = () => {
             darkMode ? "bg-gray-800" : "bg-white"
           } p-4 transition-colors`}
         >
-          {filteredTasks.length === 0 ? (
+          {loading ? (
+            <p className="text-center text-gray-400">⏳ Loading tasks...</p>
+          ) : filteredTasks.length === 0 ? (
             <p className="text-center text-gray-400">No tasks available</p>
           ) : (
             filteredTasks.map((task) => (
