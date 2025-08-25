@@ -1,68 +1,70 @@
-# =========================
-# Django / Python
-# =========================
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
-*.so
+*.pyc
+*.pdb
 *.egg
 *.egg-info/
+dist/
+build/
 *.log
 *.pot
 *.pyc
 *.sqlite3
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Django
 *.db
-*.DS_Store
-
-# Django migrations
-*/migrations/__pycache__/
-*/migrations/*.pyc
-*/migrations/*.pyo
-*/migrations/*.pot
-*/migrations/*.py~
-*/migrations/*.log
-
-# Local env files
-.env
-*.env
-.env.local
-.env.*.local
-
-# Media / static
-/media/
-staticfiles/
-static/
-
-# IDE / Editors
-.vscode/
-.idea/
+*.sqlite3
+*.log
+/staticfiles/
+media/
+.DS_Store
+*.py[cod]
+*.pyd
+*.sqlite3
 *.swp
 *.swo
-*~
-.project
-.pydevproject
+*.bak
+*.orig
+*.tmp
 
-# =========================
-# React / Node
-# =========================
+# Node / React
 node_modules/
 build/
-dist/
-.cache/
-coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+yarn.lock
+.env
 
-# React environment
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# =========================
-# OS-specific
-# =========================
-.DS_Store
+# OS files
 Thumbs.db
+.DS_Store
+
+# Coverage / Test
+htmlcov/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Ignore database URL secrets
+.env.local
+.env.production
