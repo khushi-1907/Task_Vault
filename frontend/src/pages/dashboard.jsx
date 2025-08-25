@@ -71,7 +71,7 @@ const Dashboard = () => {
 
   const deleteTask = async (id) => {
     try {
-      await api.delete(`api/tasks/${id}/`);
+      await api.delete(`tasks/${id}/`);
       fetchTasks();
     } catch (err) {
       setFlash("❌ Failed to delete task.");
@@ -82,7 +82,7 @@ const Dashboard = () => {
     try {
       const completedTasks = tasks.filter((task) => task.completed);
       await Promise.all(
-        completedTasks.map((task) => api.delete(`api/tasks/${task.id}/`))
+        completedTasks.map((task) => api.delete(`tasks/${task.id}/`))
       );
       fetchTasks();
     } catch {
