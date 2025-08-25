@@ -31,7 +31,7 @@ const Dashboard = () => {
     setLoading(true);
     setFlash("");
     try {
-      const res = await api.get("api/tasks/");
+      const res = await api.get("tasks/");
       setTasks(res.data);
     } catch (err) {
       setFlash("⚠️ Failed to load tasks.");
@@ -45,7 +45,7 @@ const Dashboard = () => {
     setCreating(true);
     setFlash("");
     try {
-      await api.post("api/tasks/", { title, description, deadline });
+      await api.post("tasks/", { title, description, deadline });
       setTitle("");
       setDescription("");
       setDeadline("");
@@ -59,7 +59,7 @@ const Dashboard = () => {
 
   const toggleComplete = async (task) => {
     try {
-      await api.put(`api/tasks/${task.id}/`, {
+      await api.put(`tasks/${task.id}/`, {
         ...task,
         completed: !task.completed,
       });

@@ -15,7 +15,7 @@ const Signup = () => {
     setLoading(true);
 
     try {
-      await api.post("api/user/register/", { username, password });
+      await api.post("user/register/", { username, password });
 
       navigate("/login", {
         state: { signupSuccess: "Account created successfully! Please login." },
