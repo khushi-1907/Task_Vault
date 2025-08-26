@@ -18,8 +18,9 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.onrender.com',
-    'task-vault-backend.onrender.com',
-    'task-vault-frontend.onrender.com',
+    '.vercel.app',
+    'https://task-vault-rosy.vercel.app',
+    'https://task-vault-p4gk.onrender.com',
 ]
 
 # Allow override through environment variable
@@ -131,7 +132,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://task-vault-frontend.onrender.com",
+    "https://task-vault-rosy.vercel.app",
 ]
 
 # Security settings for production
@@ -149,8 +150,8 @@ if not DEBUG:
 CSRF_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_TRUSTED_ORIGINS = [
-    "https://task-vault-backend.onrender.com",
-    "https://task-vault-frontend.onrender.com",
+    "https://task-vault-p4gk.onrender.com",
+    "https://task-vault-rosy.vercel.app",
 ]
 
 APPEND_SLASH = True
